@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "IMDb → StreamIMDb Redirector",
+  "version": "1.0",
+  "description": "Automatically redirects IMDb title pages to streamimdb.ru",
+  "permissions": ["activeTab", "storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "action": {}
+}

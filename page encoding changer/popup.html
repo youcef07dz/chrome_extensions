@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'">
+  <title>Encoding Changer</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <h2>Page Encoding</h2>
+  <div class="current-encoding">Current: <span id="currentEncoding">-</span></div>
+  
+  <div class="divider"></div>
+  
+  <h3>Common Encodings</h3>
+  <div class="encoding-grid">
+    <button class="encoding-btn" data-encoding="UTF-8">UTF-8</button>
+    <button class="encoding-btn" data-encoding="ISO-8859-1">ISO-8859-1</button>
+    <button class="encoding-btn" data-encoding="windows-1252">Windows-1252</button>
+    <button class="encoding-btn" data-encoding="GBK">GBK</button>
+    <button class="encoding-btn" data-encoding="GB2312">GB2312</button>
+    <button class="encoding-btn" data-encoding="Big5">Big5</button>
+    <button class="encoding-btn" data-encoding="Shift_JIS">Shift_JIS</button>
+    <button class="encoding-btn" data-encoding="EUC-JP">EUC-JP</button>
+    <button class="encoding-btn" data-encoding="EUC-KR">EUC-KR</button>
+    <button class="encoding-btn" data-encoding="windows-1251">Windows-1251</button>
+    <button class="encoding-btn" data-encoding="ISO-8859-5">ISO-8859-5</button>
+    <button class="encoding-btn" data-encoding="KOI8-R">KOI8-R</button>
+    <button class="encoding-btn" data-encoding="ISO-8859-7">ISO-8859-7</button>
+    <button class="encoding-btn" data-encoding="windows-1253">Windows-1253</button>
+    <button class="encoding-btn" data-encoding="windows-1250">Windows-1250</button>
+    <button class="encoding-btn" data-encoding="ISO-8859-2">ISO-8859-2</button>
+  </div>
+  
+  <div class="divider"></div>
+  
+  <div class="custom-encoding">
+    <input type="text" id="customEncoding" placeholder="Custom encoding...">
+    <button id="applyCustom" class="apply-btn">Apply</button>
+  </div>
+  
+  <div class="divider"></div>
+  
+  <button id="resetBtn" class="reset-btn">Reset to Original</button>
+
+  <script src="popup.js"></script>
+</body>
+</html>

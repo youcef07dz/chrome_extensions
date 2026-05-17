@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=400">
+  <title>Sudoku</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+    <div id="menu-screen" class="screen active">
+      <h1>Sudoku</h1>
+      <div class="menu-buttons">
+        <button class="level-btn" data-level="easy">Easy</button>
+        <button class="level-btn" data-level="medium">Medium</button>
+        <button class="level-btn" data-level="hard">Hard</button>
+        <button class="level-btn" data-level="expert">Expert</button>
+      </div>
+    </div>
+
+    <div id="game-screen" class="screen">
+      <div id="header">
+        <button id="back-btn" class="icon-btn">&#x2190;</button>
+        <span id="level-display">Easy</span>
+        <span id="timer">00:00</span>
+      </div>
+
+      <div id="board">
+        <table id="sudoku-grid"></table>
+      </div>
+
+      <div id="controls">
+        <div id="numpad">
+          <button class="num-btn" data-num="1">1</button>
+          <button class="num-btn" data-num="2">2</button>
+          <button class="num-btn" data-num="3">3</button>
+          <button class="num-btn" data-num="4">4</button>
+          <button class="num-btn" data-num="5">5</button>
+          <button class="num-btn" data-num="6">6</button>
+          <button class="num-btn" data-num="7">7</button>
+          <button class="num-btn" data-num="8">8</button>
+          <button class="num-btn" data-num="9">9</button>
+          <button id="erase-btn" class="action-btn">Erase</button>
+        </div>
+        <div id="game-actions">
+          <button id="new-game-btn">New Game</button>
+          <button id="check-btn">Check</button>
+          <button id="hint-btn">Hint</button>
+        </div>
+      </div>
+
+      <div id="pause-overlay" class="overlay hidden">
+        <div class="overlay-content">
+          <h2>Paused</h2>
+          <button id="resume-btn">Resume</button>
+          <button id="quit-btn">Quit</button>
+        </div>
+      </div>
+
+      <div id="finish-overlay" class="overlay hidden">
+        <div class="overlay-content finish-content">
+          <h2>&#127881; Congratulations!</h2>
+          <p>You solved the puzzle!</p>
+          <p id="finish-time"></p>
+          <button id="play-again-btn">Play Again</button>
+          <button id="menu-btn">Menu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

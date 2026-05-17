@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anti-Fingerprint</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Anti-Fingerprint</h1>
+        <p class="subtitle">Randomize browser fingerprint to prevent tracking</p>
+      </div>
+    </div>
+
+    <div class="toggle-row">
+      <span class="toggle-label">Protection enabled</span>
+      <label class="switch">
+        <input type="checkbox" id="enabled-toggle" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <div class="settings-section">
+      <p class="section-title">Fingerprint Protections</p>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="canvas-toggle" checked>
+        <label for="canvas-toggle">
+          <span class="label-text">Canvas fingerprint</span>
+          <span class="label-desc">Adds subtle noise to canvas rendering</span>
+        </label>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="fonts-toggle" checked>
+        <label for="fonts-toggle">
+          <span class="label-text">Font fingerprint</span>
+          <span class="label-desc">Alters font metrics and text measurements</span>
+        </label>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="webgl-toggle" checked>
+        <label for="webgl-toggle">
+          <span class="label-text">WebGL fingerprint</span>
+          <span class="label-desc">Obfuscates GPU and renderer information</span>
+        </label>
+      </div>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="audio-toggle" checked>
+        <label for="audio-toggle">
+          <span class="label-text">Audio fingerprint</span>
+          <span class="label-desc">Adds noise to audio context output</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <p class="info-text">
+        Each page session gets a unique random seed. Fingerprint data is randomized per session to appear unique to trackers while remaining consistent within a single page load.
+      </p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

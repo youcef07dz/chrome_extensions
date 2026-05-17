@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head><title>Icon Generator</title></head>
+<body>
+<canvas id="c" width="128" height="128"></canvas>
+<script>
+const c = document.getElementById("c");
+const ctx = c.getContext("2d");
+const g = ctx.createLinearGradient(0, 0, 128, 128);
+g.addColorStop(0, "#4a90d9");
+g.addColorStop(1, "#357abd");
+ctx.fillStyle = g;
+ctx.beginPath();
+ctx.roundRect(0, 0, 128, 128, 20);
+ctx.fill();
+ctx.fillStyle = "white";
+ctx.font = "bold 48px Arial";
+ctx.textAlign = "center";
+ctx.fillText("Aa", 64, 52);
+ctx.font = "24px monospace";
+ctx.globalAlpha = 0.9;
+ctx.fillText("文", 64, 85);
+ctx.fillStyle = "white";
+ctx.globalAlpha = 0.5;
+ctx.beginPath();
+ctx.roundRect(24, 95, 80, 8, 4);
+ctx.fill();
+const link = document.createElement("a");
+link.download = "icon.png";
+link.href = c.toDataURL();
+link.click();
+</script>
+</body>
+</html>

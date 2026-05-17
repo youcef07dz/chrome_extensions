@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      padding: 40px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    h1 { font-size: 22px; margin-bottom: 24px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; color: #475569; }
+    .field select, .field input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+    .field input[type="checkbox"] { width: auto; }
+    .field.checkbox { display: flex; align-items: center; gap: 8px; }
+    .field.checkbox label { margin-bottom: 0; }
+    #status { margin-top: 16px; font-size: 13px; }
+    .success { color: #16a34a; }
+    .error { color: #dc2626; }
+    #saveBtn {
+      padding: 10px 24px;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    #saveBtn:hover { background: #4338ca; }
+  </style>
+</head>
+<body>
+  <h1>Extension Settings</h1>
+
+  <div class="field">
+    <label for="defaultOrientation">Default Orientation</label>
+    <select id="defaultOrientation">
+      <option value="portrait">Portrait</option>
+      <option value="landscape">Landscape</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="defaultPaperSize">Default Paper Size</label>
+    <select id="defaultPaperSize">
+      <option value="a4">A4</option>
+      <option value="letter">Letter</option>
+      <option value="legal">Legal</option>
+    </select>
+  </div>
+
+  <div class="field checkbox">
+    <input type="checkbox" id="defaultBackground" checked />
+    <label for="defaultBackground">Print background graphics</label>
+  </div>
+
+  <div class="field">
+    <label for="defaultScale">Default Scale (%)</label>
+    <input type="number" id="defaultScale" value="100" min="10" max="200" />
+  </div>
+
+  <button id="saveBtn">Save Settings</button>
+  <div id="status"></div>
+
+  <script src="options.js"></script>
+</body>
+</html>
