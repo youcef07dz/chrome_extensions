@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Tab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <div id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <h2>Designer</h2>
+        <button id="closeSidebar" class="icon-btn">&times;</button>
+      </div>
+      <div class="sidebar-section">
+        <h3>Background</h3>
+        <div class="setting-group">
+          <label>Type</label>
+          <select id="bgType">
+            <option value="color">Solid Color</option>
+            <option value="gradient">Gradient</option>
+            <option value="image">Image</option>
+          </select>
+        </div>
+        <div class="setting-group" id="colorPickGroup">
+          <label>Color</label>
+          <input type="color" id="bgColor" value="#1a1a2e">
+        </div>
+        <div class="setting-group" id="gradientGroup" style="display:none">
+          <label>Gradient</label>
+          <div class="gradient-pickers">
+            <input type="color" id="gradColor1" value="#1a1a2e">
+            <input type="color" id="gradColor2" value="#16213e">
+            <select id="gradDirection">
+              <option value="to right">→</option>
+              <option value="to bottom">↓</option>
+              <option value="to bottom right">↘</option>
+              <option value="to top right">↗</option>
+            </select>
+          </div>
+        </div>
+        <div class="setting-group" id="imageGroup" style="display:none">
+          <label>Image URL</label>
+          <input type="text" id="bgImageUrl" placeholder="https://...">
+          <button id="applyBgImage" class="btn small">Apply</button>
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <h3>Widgets</h3>
+        <div class="widget-toggles">
+          <label><input type="checkbox" id="showTime" checked> Clock</label>
+          <label><input type="checkbox" id="showDate" checked> Date</label>
+          <label><input type="checkbox" id="showGreeting" checked> Greeting</label>
+          <label><input type="checkbox" id="showQuote" checked> Quote</label>
+          <label><input type="checkbox" id="showSearch" checked> Search</label>
+          <label><input type="checkbox" id="showWeather" checked> Weather</label>
+          <label><input type="checkbox" id="showLinks" checked> Quick Links</label>
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <h3>Text</h3>
+        <div class="setting-group">
+          <label>Name</label>
+          <input type="text" id="userName" placeholder="Your name">
+        </div>
+        <div class="setting-group">
+          <label>Text Color</label>
+          <input type="color" id="textColor" value="#ffffff">
+        </div>
+        <div class="setting-group">
+          <label>Font Size</label>
+          <input type="range" id="fontSize" min="12" max="32" value="16">
+        </div>
+      </div>
+      <div class="sidebar-section">
+        <button id="resetDefaults" class="btn">Reset Defaults</button>
+      </div>
+    </div>
+
+    <div id="main">
+      <button id="openSidebar" class="designer-btn">&#9998; Design</button>
+
+      <div id="centerContent">
+        <div id="time" class="widget"></div>
+        <div id="date" class="widget"></div>
+        <div id="greeting" class="widget"></div>
+        <div id="quote" class="widget"></div>
+        <div id="searchContainer" class="widget">
+          <form id="searchForm">
+            <input type="text" id="searchInput" placeholder="Search Google or type a URL..." autofocus>
+          </form>
+        </div>
+      </div>
+
+      <div id="bottomWidgets">
+        <div id="weather" class="widget"></div>
+        <div id="quickLinks" class="widget"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="linkModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close">&times;</span>
+      <h2>Add Quick Link</h2>
+      <input type="text" id="linkName" placeholder="Link name">
+      <input type="text" id="linkUrl" placeholder="https://...">
+      <button id="saveLink" class="btn">Save</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

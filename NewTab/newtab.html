@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Tab</title>
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="newtab.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<!-- Animated wallpaper background -->
+<div class="wallpaper" id="wallpaper"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- macOS top bar -->
+<header class="top-bar">
+  <div class="top-bar-left">
+    <span class="top-bar-dot dot-red"></span>
+    <span class="top-bar-dot dot-yellow"></span>
+    <span class="top-bar-dot dot-green"></span>
+  </div>
+  <div class="top-bar-center" id="topBarTitle">New Tab</div>
+  <div class="top-bar-right">
+    <i class="fas fa-wifi"></i>
+    <i class="fas fa-battery-full"></i>
+    <span id="topBarTime"></span>
+  </div>
+</header>
+
+<!-- Main content -->
+<main class="container">
+
+  <!-- Clock -->
+  <section class="clock-section" aria-label="Clock and greeting">
+    <div class="clock-time" id="clockTime">00:00</div>
+    <div class="clock-date" id="clockDate"></div>
+    <div class="clock-greeting" id="clockGreeting"></div>
+  </section>
+
+  <!-- Search -->
+  <div class="search-wrapper">
+    <form class="search-form" id="searchForm" action="https://www.google.com/search" method="get" role="search">
+      <input class="search-bar" type="text" name="q" placeholder="Search Google or type a URL" autocomplete="off" aria-label="Search">
+      <i class="fas fa-search search-icon"></i>
+    </form>
+  </div>
+
+  <!-- Widgets row -->
+  <div class="widgets-row">
+    <div class="widget glass-sm" aria-label="Weather">
+      <div class="widget-label">Weather</div>
+      <div class="widget-value">
+        <span class="weather-icon">🌤</span>22°
+      </div>
+      <div class="widget-sub">Partly Cloudy · San Francisco</div>
+    </div>
+    <div class="widget glass-sm" aria-label="Focus timer">
+      <div class="widget-label">Focus</div>
+      <div class="widget-value" id="focusTimer">25:00</div>
+      <div class="widget-sub">
+        <span id="focusLabel" style="cursor:pointer;" role="button" tabindex="0" aria-label="Start focus timer">Click to start</span>
+      </div>
+    </div>
+    <div class="widget glass-sm" aria-label="Quick stats">
+      <div class="widget-label">Today</div>
+      <div class="widget-value" id="dayProgress">0%</div>
+      <div class="widget-sub" id="dayRemaining">of day remaining</div>
+    </div>
+  </div>
+
+  <!-- Apps grid -->
+  <section class="apps-section" aria-label="Apps">
+    <div class="apps-label">Frequently Used</div>
+    <div class="apps-grid" id="appsGrid"></div>
+  </section>
+
+  <!-- Quick notes -->
+  <section class="notes-section" aria-label="Quick notes">
+    <div class="apps-label" style="margin-bottom:10px;">Quick Note</div>
+    <textarea class="notes-area" id="notesArea" placeholder="Jot something down... (auto-saved locally)" aria-label="Quick note"></textarea>
+  </section>
+
+</main>
+
+<!-- macOS Dock -->
+<nav class="dock-wrapper" aria-label="Quick access dock">
+  <div class="dock" id="dock"></div>
+</nav>
+
+<!-- Settings modal -->
+<div class="settings-overlay" id="settingsOverlay" role="dialog" aria-label="Settings">
+  <div class="settings-panel glass" style="position:relative;">
+    <button class="close-settings" id="closeSettings" aria-label="Close settings"><i class="fas fa-times"></i></button>
+    <div class="settings-title">Settings</div>
+    <div class="settings-group">
+      <div class="settings-group-label">Your Name</div>
+      <input class="name-input" id="nameInput" type="text" placeholder="Enter your name" maxlength="30">
+    </div>
+    <div class="settings-group">
+      <div class="settings-group-label">Theme</div>
+      <div class="theme-options" id="themeOptions"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+<script src="newtab.js"></script>
+</body>
+</html>

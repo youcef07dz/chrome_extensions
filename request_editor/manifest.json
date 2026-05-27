@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Request Editor",
+  "version": "1.0.0",
+  "description": "Intercept, edit, and forward/drop HTTP requests using Chrome Debugger API",
+  "permissions": [
+    "debugger",
+    "storage",
+    "activeTab"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Request Editor",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  }
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Editor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      <label class="switch">
+        <input type="checkbox" id="toggleIntercept">
+        <span class="slider"></span>
+      </label>
+      <span id="statusLabel" class="status-label">OFF</span>
+    </div>
+    <div class="header-right">
+      <input type="text" id="urlFilter" placeholder="Filter by URL..." class="filter-input">
+      <button id="clearBtn" class="btn btn-sm" title="Clear all">Clear</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="toolbar-row">
+      <button id="forwardAllBtn" class="btn btn-forward btn-sm" title="Forward all intercepted requests">Forward All</button>
+      <button id="dropAllBtn" class="btn btn-drop btn-sm" title="Drop all intercepted requests">Drop All</button>
+      <button id="globalHeaderToggle" class="btn btn-global-hdr btn-sm" title="Set headers applied to all forwarded requests">+ Header to All</button>
+      <button id="autoForwardToggle" class="btn btn-auto-fwd btn-sm" title="Automatically forward intercepted requests with custom headers">Auto Forward</button>
+    </div>
+    <div id="globalHeaderPanel" class="global-hdr-panel" style="display:none;">
+      <textarea id="globalHeaderInput" class="global-hdr-textarea" placeholder="Authorization: Bearer token&#10;X-Custom: value" rows="2"></textarea>
+      <div class="global-hdr-actions">
+        <button id="applyGlobalHeaders" class="btn btn-xs btn-apply-hdr" title="Apply these headers to all forwarded requests">Apply</button>
+        <span id="globalHeaderCount" class="global-hdr-count"></span>
+      </div>
+    </div>
+    <div id="autoForwardPanel" class="auto-fwd-panel" style="display:none;">
+      <label class="auto-fwd-check-label">
+        <input type="checkbox" id="autoFwdCheckbox"> Auto-forward intercepted requests
+      </label>
+      <textarea id="autoFwdHeaderInput" class="auto-fwd-textarea" placeholder="Authorization: Bearer token&#10;X-Custom: value" rows="2"></textarea>
+      <div class="auto-fwd-actions">
+        <button id="applyAutoFwdHeaders" class="btn btn-xs btn-apply-hdr" title="Apply these headers to auto-forwarded requests">Apply</button>
+        <span id="autoFwdHeaderCount" class="auto-fwd-count"></span>
+      </div>
+    </div>
+  </div>
+
+  <div id="requestList" class="request-list"></div>
+
+  <div id="emptyState" class="empty-state">
+    <div class="empty-icon">&#128270;</div>
+    <p>Toggle ON to start intercepting requests</p>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

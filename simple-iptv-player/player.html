@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPTV Player</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>📺</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="panel">
+      <div class="panel-header">
+        <h1>IPTV Player</h1>
+        <div class="panel-header-actions">
+          <button id="addPlaylistBtn" class="btn-icon" title="Add Playlist">+</button>
+        </div>
+      </div>
+
+      <div id="playlistBar" class="playlist-bar hidden">
+        <div class="playlist-form">
+          <input type="text" id="playlistName" placeholder="Playlist name..." />
+          <input type="text" id="playlistUrl" placeholder="M3U URL..." />
+          <div class="playlist-form-actions">
+            <button id="loadUrlBtn" class="btn btn-sm">Load URL</button>
+            <span class="or-divider">or</span>
+            <label class="btn btn-sm btn-file">
+              Browse
+              <input type="file" id="fileInput" accept=".m3u,.m3u8" />
+            </label>
+            <button id="cancelPlaylistBtn" class="btn btn-sm btn-secondary">X</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-search">
+        <input type="text" id="searchInput" placeholder="Search channels..." />
+      </div>
+
+      <div class="panel-playlist-row">
+        <select id="playlistSelect"></select>
+        <button id="removePlaylistBtn" class="btn-icon btn-danger" title="Remove Playlist">&times;</button>
+      </div>
+
+      <div id="channelList" class="channel-list" tabindex="0"></div>
+
+      <div id="searchEmpty" class="search-empty hidden">
+        <p>No channels match your search.</p>
+      </div>
+
+      <div id="emptyState" class="empty-state">
+        <p>No channels loaded.</p>
+        <p>Click <strong>+</strong> to add an M3U playlist.</p>
+      </div>
+    </aside>
+
+    <main class="player-area">
+      <div class="player-header">
+        <button id="togglePanelBtn" class="btn-icon toggle-btn" title="Toggle Sidebar">&#x2630;</button>
+        <span id="channelName" class="channel-name">Select a channel</span>
+      </div>
+      <div class="player-wrapper">
+        <video id="videoPlayer" controls autoplay></video>
+        <div id="loadingOverlay" class="loading-overlay hidden">
+          <div class="spinner"></div>
+          <p>Loading stream...</p>
+        </div>
+        <div id="errorOverlay" class="error-overlay hidden">
+          <p id="errorMessage">Failed to load stream.</p>
+          <button id="retryBtn" class="btn">Retry</button>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="player.js"></script>
+</body>
+</html>
