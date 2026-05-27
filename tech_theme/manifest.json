@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Tech Theme - Neon Matrix",
+  "version": "1.0.0",
+  "description": "Sleek dark tech new tab page with neon accents.",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

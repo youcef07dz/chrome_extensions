@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nostalgia Mode</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 330px;
+      padding: 14px;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      font-size: 13px;
+    }
+    h1 {
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      color: #e0c3fc;
+      margin-bottom: 12px;
+    }
+    .master {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #16213e;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .master label { font-size: 14px; font-weight: 600; cursor: pointer; }
+    .switch {
+      position: relative;
+      display: block;
+      width: 38px; height: 20px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .sw-slider {
+      position: absolute;
+      inset: 0;
+      background: #333;
+      border-radius: 20px;
+      pointer-events: none;
+      transition: background 0.2s;
+    }
+    .sw-slider::before {
+      content: '';
+      position: absolute;
+      width: 16px; height: 16px;
+      left: 2px; bottom: 2px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .switch input:checked + .sw-slider { background: #7c3aed; }
+    .switch input:checked + .sw-slider::before { transform: translateX(18px); }
+
+    .tbl {
+      display: grid;
+      gap: 3px;
+    }
+    .tbl-hdr {
+      display: grid;
+      grid-template-columns: 90px 26px 1fr 40px 18px;
+      gap: 4px;
+      padding: 0 10px 3px;
+      font-size: 10px;
+      text-transform: uppercase;
+      color: #666;
+    }
+    .tbl-hdr span { text-align: center; }
+    .tbl-hdr span:first-child { text-align: left; }
+    .tbl-hdr span:nth-child(4) { text-align: right; }
+    .tbl-row {
+      display: grid;
+      grid-template-columns: 90px 26px 1fr 40px 18px;
+      gap: 4px;
+      align-items: center;
+      background: #16213e;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+    .tbl-label { font-size: 12px; }
+    .tbl-row input[type="checkbox"] {
+      accent-color: #7c3aed;
+      width: 14px; height: 14px;
+      cursor: pointer;
+    }
+    .tbl-row input[type="range"] {
+      width: 100%;
+      accent-color: #7c3aed;
+      cursor: pointer;
+      height: 3px;
+    }
+    .tbl-val {
+      text-align: right;
+      font-size: 10px;
+      color: #aaa;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tbl-sep {
+      grid-column: 1 / -1;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #555;
+      padding: 6px 10px 2px;
+    }
+    .rst-btn {
+      background: none;
+      border: none;
+      color: #555;
+      cursor: pointer;
+      font-size: 13px;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    .rst-btn:hover { color: #e0c3fc; }
+    .footer { text-align: center; margin-top: 10px; }
+    .save-btn {
+      background: #7c3aed;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 24px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .save-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Nostalgia Mode</h1>
+
+  <div class="master">
+    <label for="masterToggle">Master toggle</label>
+    <label class="switch">
+      <input type="checkbox" id="masterToggle" />
+      <span class="sw-slider"></span>
+    </label>
+  </div>
+
+  <div class="tbl" id="controls">
+    <div class="tbl-hdr">
+      <span>Effect</span>
+      <span>On</span>
+      <span>Level</span>
+      <span>Val</span>
+      <span></span>
+    </div>
+
+    <div class="tbl-sep">Basic</div>
+
+    <div class="tbl-row">
+      <span class="tbl-label">Saturation</span>
+      <span></span>
+      <input type="range" id="saturation" min="0" max="3" step="0.05" value="1" />
+      <span class="tbl-val" id="saturationVal">1</span>
+      <button class="rst-btn" data-key="saturation" title="Reset">↺</button>
+    </div>
+    <div class="tbl-row">
+      <span class="tbl-label">Brightness</span>
+      <span></span>
+      <input type="range" id="brightness" min="0" max="3" step="0.05" value="1" />
+      <span class="tbl-val" id="brightnessVal">1</span>
+      <button class="rst-btn" data-key="brightness" title="Reset">↺</button>
+    </div>
+    <div class="tbl-row">
+      <span class="tbl-label">Contrast</span>
+      <span></span>
+      <input type="range" id="contrast" min="0" max="3" step="0.05" value="1" />
+      <span class="tbl-val" id="contrastVal">1</span>
+      <button class="rst-btn" data-key="contrast" title="Reset">↺</button>
+    </div>
+    <div class="tbl-row">
+      <span class="tbl-label">Invert</span>
+      <span></span>
+      <input type="range" id="invert" min="0" max="1" step="0.05" value="0" />
+      <span class="tbl-val" id="invertVal">0</span>
+      <button class="rst-btn" data-key="invert" title="Reset">↺</button>
+    </div>
+    <div class="tbl-row">
+      <span class="tbl-label">Scanlines</span>
+      <input type="checkbox" id="scanlines" />
+      <input type="range" id="scanlinesOpacity" min="0" max="1" step="0.05" value="0.2" />
+      <span class="tbl-val" id="scanlinesVal">0.2</span>
+      <button class="rst-btn" data-key="scanlines" data-skey="scanlinesOpacity" title="Reset">↺</button>
+    </div>
+    <div class="tbl-row">
+      <span class="tbl-label">Noise</span>
+      <input type="checkbox" id="noise" />
+      <input type="range" id="noiseOpacity" min="0" max="1" step="0.05" value="0.1" />
+      <span class="tbl-val" id="noiseVal">0.1</span>
+      <button class="rst-btn" data-key="noise" data-skey="noiseOpacity" title="Reset">↺</button>
+    </div>
+    <div class="tbl-row">
+      <span class="tbl-label">Vignette</span>
+      <input type="checkbox" id="vignette" />
+      <span></span>
+      <span class="tbl-val"></span>
+      <button class="rst-btn" data-key="vignette" title="Reset">↺</button>
+    </div>
+    <div class="tbl-row">
+      <span class="tbl-label">Flicker</span>
+      <input type="checkbox" id="flicker" />
+      <span></span>
+      <span class="tbl-val"></span>
+      <button class="rst-btn" data-key="flicker" title="Reset">↺</button>
+    </div>
+
+    <div class="tbl-sep">Advanced</div>
+
+    <div class="tbl-row">
+      <span class="tbl-label">Sepia</span>
+      <span></span>
+      <input type="range" id="sepia" min="0" max="1" step="0.05" value="0" />
+      <span class="tbl-val" id="sepiaVal">0</span>
+      <button class="rst-btn" data-key="sepia" title="Reset">↺</button>
+    </div>
+    <div class="tbl-row">
+      <span class="tbl-label">Grayscale</span>
+      <span></span>
+      <input type="range" id="grayscale" min="0" max="1" step="0.05" value="0" />
+      <span class="tbl-val" id="grayscaleVal">0</span>
+      <button class="rst-btn" data-key="grayscale" title="Reset">↺</button>
+    </div>
+    <div class="tbl-row">
+      <span class="tbl-label">Hue</span>
+      <span></span>
+      <input type="range" id="hue" min="0" max="360" step="1" value="0" />
+      <span class="tbl-val" id="hueVal">0</span>
+      <button class="rst-btn" data-key="hue" title="Reset">↺</button>
+    </div>
+    <div class="tbl-row">
+      <span class="tbl-label">Blur</span>
+      <span></span>
+      <input type="range" id="blur" min="0" max="16" step="1" value="0" />
+      <span class="tbl-val" id="blurVal">0</span>
+      <button class="rst-btn" data-key="blur" title="Reset">↺</button>
+    </div>
+    <div class="tbl-row">
+      <span class="tbl-label">Sharpness</span>
+      <span></span>
+      <input type="range" id="sharpness" min="0" max="3" step="0.1" value="0" />
+      <span class="tbl-val" id="sharpnessVal">0</span>
+      <button class="rst-btn" data-key="sharpness" title="Reset">↺</button>
+    </div>
+    <div class="tbl-row">
+      <span class="tbl-label">Temperature</span>
+      <span></span>
+      <input type="range" id="temperature" min="-2" max="2" step="0.1" value="0" />
+      <span class="tbl-val" id="temperatureVal">0</span>
+      <button class="rst-btn" data-key="temperature" title="Reset">↺</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <button id="saveBtn" class="save-btn" disabled>Saved</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

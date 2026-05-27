@@ -10,19 +10,16 @@ function extractAllVideoIds() {
   for (const a of watchLinks) {
     const id = idFromHref(a.href);
     if (!id || ids.has(id)) continue;
-    ids.set(id, { videoId: id, title: '', channel: '', duration: '' });
+    ids.set(id, { videoId: id, title: '', channel: '', duration: '', type: 'video' });
   }
 
   const shortsLinks = document.querySelectorAll('a[href*="/shorts/"]');
   for (const a of shortsLinks) {
-    const m = a.href.match(/\/shorts\/([\w-]{11})/);
-    if (m && !ids.has(m[1])) ids.set(m[1], { videoId: m[1], title: '', channel: '' });
-  }
-
-  const thumbnails = document.querySelectorAll('img[src*="/vi/"]');
-  for (const img of thumbnails) {
-    const m = img.src.match(/\/vi\/([\w-]{11})\//);
-    if (m && !ids.has(m[1])) ids.set(m[1], { videoId: m[1], title: '', channel: '' });
+    try {
+      const url = new URL(a.href, window.location.origin);
+      const m = url.pathname.match(/^\/shorts\/([\w-]{11})/);
+      if (m && !ids.has(m[1])) ids.set(m[1], { videoId: m[1], title: '', channel: '', type: 'shorts' });
+    } catch (e) {}
   }
 
   for (const [id, entry] of ids) {
@@ -119,8 +116,17 @@ function extractAllVideoIds() {
 }
 
 const savedVideoIds = new Set();
+let hydrated = false;
+
+async function hydrateIds() {
+  const result = await chrome.storage.local.get('savedVideos');
+  const videos = result.savedVideos || [];
+  for (const v of videos) savedVideoIds.add(v.videoId);
+  hydrated = true;
+}
 
 function savePageVideos() {
+  if (!hydrated) return;
   const all = extractAllVideoIds();
   const newOnes = all.filter(v => !savedVideoIds.has(v.videoId));
   if (newOnes.length === 0) return;
@@ -128,15 +134,28 @@ function savePageVideos() {
   chrome.runtime.sendMessage({ type: 'SAVE_VIDEOS', videos: newOnes });
 }
 
-let debounceTimer = null;
-function debouncedSave() {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(savePageVideos, 800);
+let saveTimer = null;
+let savePending = false;
+function throttledSave() {
+  if (savePending) return;
+  savePending = true;
+  saveTimer = setTimeout(() => {
+    savePending = false;
+    savePageVideos();
+  }, 2500);
+}
+function clearThrottle() {
+  if (saveTimer) clearTimeout(saveTimer);
+  savePending = false;
 }
 
-const observer = new MutationObserver(() => debouncedSave());
-observer.observe(document.body, { childList: true, subtree: true });
+const target = document.querySelector('ytd-app') || document.body;
+const observer = new MutationObserver(() => throttledSave());
+observer.observe(target, { childList: true, subtree: true });
 
-window.addEventListener('yt-navigate-finish', () => debouncedSave());
+window.addEventListener('yt-navigate-finish', () => {
+  clearThrottle();
+  setTimeout(savePageVideos, 500);
+});
 
-savePageVideos();
+hydrateIds().then(savePageVideos);

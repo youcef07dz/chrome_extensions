@@ -2,6 +2,14 @@ let allVideos = [];
 let currentView = 'grid';
 let currentMode = 'saved';
 
+function debounce(fn, ms) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), ms);
+  };
+}
+
 function formatTime(ts) {
   const diff = Date.now() - ts;
   const m = Math.floor(diff / 60000);
@@ -23,6 +31,80 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function showConfirm(title, message) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('confirmModal');
+    const titleEl = document.getElementById('confirmTitle');
+    const msgEl = document.getElementById('confirmMessage');
+    const yesBtn = document.getElementById('confirmYes');
+    const noBtn = document.getElementById('confirmNo');
+
+    titleEl.textContent = title;
+    msgEl.textContent = message;
+    yesBtn.textContent = 'Confirm';
+    yesBtn.className = 'btn-primary';
+    yesBtn.style.background = '#ff4444';
+    noBtn.textContent = 'Cancel';
+    noBtn.className = 'btn-cancel';
+    overlay.classList.remove('hidden');
+
+    function cleanup(answer) {
+      overlay.classList.add('hidden');
+      yesBtn.removeEventListener('click', onYes);
+      noBtn.removeEventListener('click', onNo);
+      overlay.removeEventListener('click', onOverlay);
+      document.removeEventListener('keydown', onKey);
+      resolve(answer);
+    }
+    function onYes() { cleanup(true); }
+    function onNo() { cleanup(false); }
+    function onOverlay(e) { if (e.target === overlay) cleanup(false); }
+    function onKey(e) { if (e.key === 'Escape') cleanup(false); }
+
+    yesBtn.addEventListener('click', onYes);
+    noBtn.addEventListener('click', onNo);
+    overlay.addEventListener('click', onOverlay);
+    document.addEventListener('keydown', onKey);
+  });
+}
+
+function showChoice(title, message, btnALabel, btnBLabel) {
+  return new Promise((resolve) => {
+    const overlay = document.getElementById('confirmModal');
+    const titleEl = document.getElementById('confirmTitle');
+    const msgEl = document.getElementById('confirmMessage');
+    const yesBtn = document.getElementById('confirmYes');
+    const noBtn = document.getElementById('confirmNo');
+
+    titleEl.textContent = title;
+    msgEl.textContent = message;
+    yesBtn.textContent = btnALabel;
+    yesBtn.className = 'btn-primary';
+    yesBtn.style.background = '#3ea6ff';
+    noBtn.textContent = btnBLabel;
+    noBtn.className = 'btn-cancel';
+    overlay.classList.remove('hidden');
+
+    function cleanup(answer) {
+      overlay.classList.add('hidden');
+      yesBtn.removeEventListener('click', onA);
+      noBtn.removeEventListener('click', onB);
+      overlay.removeEventListener('click', onOverlay);
+      document.removeEventListener('keydown', onKey);
+      resolve(answer);
+    }
+    function onA() { cleanup(btnALabel); }
+    function onB() { cleanup(btnBLabel); }
+    function onOverlay(e) { if (e.target === overlay) cleanup(null); }
+    function onKey(e) { if (e.key === 'Escape') cleanup(null); }
+
+    yesBtn.addEventListener('click', onA);
+    noBtn.addEventListener('click', onB);
+    overlay.addEventListener('click', onOverlay);
+    document.addEventListener('keydown', onKey);
+  });
 }
 
 function renderVideoGrid(videos, mode) {
@@ -172,18 +254,18 @@ function updateActionButtons() {
           <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
         </svg>
       </button>`;
-    document.getElementById('restoreAllBtn').addEventListener('click', () => {
+    document.getElementById('restoreAllBtn').addEventListener('click', async () => {
       if (!allVideos.length) return;
-      if (confirm('Restore all blacklisted videos?')) {
+      if (await showConfirm('Restore all?', 'Restore all blacklisted videos?')) {
         allVideos = [];
         renderVideos(allVideos);
         showToast('All videos restored from blacklist');
         chrome.runtime.sendMessage({ type: 'RESTORE_ALL' });
       }
     });
-    document.getElementById('emptyTrashBtn').addEventListener('click', () => {
+    document.getElementById('emptyTrashBtn').addEventListener('click', async () => {
       if (!allVideos.length) return;
-      if (confirm('Permanently clear the blacklist?')) {
+      if (await showConfirm('Clear blacklist?', 'Permanently clear the blacklist?')) {
         allVideos = [];
         renderVideos(allVideos);
         showToast('Blacklist cleared');
@@ -197,9 +279,9 @@ function updateActionButtons() {
           <path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
         </svg>
       </button>`;
-    document.getElementById('deleteAllBtn').addEventListener('click', () => {
+    document.getElementById('deleteAllBtn').addEventListener('click', async () => {
       if (!allVideos.length) return;
-      if (confirm('Blacklist all videos?')) {
+      if (await showConfirm('Delete all?', 'Blacklist all saved videos?')) {
         allVideos = [];
         renderVideos(allVideos);
         showToast('All videos blacklisted');
@@ -222,12 +304,94 @@ function loadVideos() {
   });
 }
 
-document.getElementById('searchInput').addEventListener('input', (e) => {
-  const q = e.target.value.toLowerCase().trim();
+async function exportData() {
+  try {
+    const [saved, deleted, settings] = await Promise.all([
+      chrome.runtime.sendMessage({ type: 'GET_VIDEOS' }),
+      chrome.runtime.sendMessage({ type: 'GET_DELETED_VIDEOS' }),
+      chrome.runtime.sendMessage({ type: 'GET_SETTINGS' })
+    ]);
+
+    const data = {
+      version: 1,
+      exportedAt: Date.now(),
+      savedVideos: saved.videos || [],
+      deletedVideos: deleted.videos || [],
+      settings: settings.settings || { maxVideos: 1000 }
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `yt-history-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`Exported ${data.savedVideos.length} videos`);
+  } catch (err) {
+    showToast('Export failed: ' + err.message);
+  }
+}
+
+async function importData() {
+  const mode = await showChoice(
+    'Import mode',
+    'Merge adds new videos only (skips duplicates). Replace clears everything and uses the backup.',
+    'Merge', 'Replace'
+  );
+  if (!mode) return;
+
+  const input = document.getElementById('importFileInput');
+  input.dataset.importMode = mode.toLowerCase();
+  input.click();
+}
+
+document.getElementById('importFileInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+
+    if (!data.version || !Array.isArray(data.savedVideos)) {
+      showToast('Invalid backup file');
+      return;
+    }
+
+    const res = await chrome.runtime.sendMessage({
+      type: 'IMPORT_DATA',
+      mode: e.target.dataset.importMode || 'merge',
+      data: {
+        savedVideos: data.savedVideos,
+        deletedVideos: data.deletedVideos || [],
+        settings: data.settings || { maxVideos: 1000 }
+      }
+    });
+
+    if (res && res.ok) {
+      showToast(`Imported ${data.savedVideos.length} videos`);
+      loadVideos();
+    }
+  } catch (err) {
+    showToast('Import failed: ' + err.message);
+  }
+
+  e.target.value = '';
+});
+
+document.getElementById('exportBtn').addEventListener('click', exportData);
+document.getElementById('importBtn').addEventListener('click', importData);
+
+const doSearch = debounce((q) => {
   if (!q) return renderVideos(allVideos);
   renderVideos(allVideos.filter(v =>
     v.title.toLowerCase().includes(q) || v.channel.toLowerCase().includes(q)
   ));
+}, 250);
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  doSearch(e.target.value.toLowerCase().trim());
 });
 
 document.getElementById('searchBtn').addEventListener('click', () => {
@@ -241,9 +405,19 @@ document.getElementById('trashBtn').addEventListener('click', () => {
   setMode(currentMode === 'trash' ? 'saved' : 'trash');
 });
 
+function applyTheme(theme) {
+  if (theme === 'system') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+}
+
 document.getElementById('settingsBtn').addEventListener('click', () => {
   chrome.runtime.sendMessage({ type: 'GET_SETTINGS' }, (res) => {
     document.getElementById('maxVideosInput').value = res.settings.maxVideos;
+    document.getElementById('saveFilterSelect').value = res.settings.saveFilter || 'all';
+    document.getElementById('themeSelect').value = res.settings.theme || 'system';
     document.getElementById('settingsModal').classList.remove('hidden');
   });
 });
@@ -255,7 +429,10 @@ document.getElementById('closeSettingsBtn').addEventListener('click', () => {
 document.getElementById('saveSettingsBtn').addEventListener('click', () => {
   const max = parseInt(document.getElementById('maxVideosInput').value, 10);
   if (isNaN(max) || max < 1) return showToast('Enter a valid number');
-  chrome.runtime.sendMessage({ type: 'SAVE_SETTINGS', settings: { maxVideos: max } }, () => {
+  const saveFilter = document.getElementById('saveFilterSelect').value;
+  const theme = document.getElementById('themeSelect').value;
+  applyTheme(theme);
+  chrome.runtime.sendMessage({ type: 'SAVE_SETTINGS', settings: { maxVideos: max, saveFilter, theme } }, () => {
     document.getElementById('settingsModal').classList.add('hidden');
     showToast('Settings saved');
   });
@@ -274,6 +451,7 @@ document.addEventListener('keydown', (e) => {
   }
   if (e.key === 'Escape') {
     document.getElementById('settingsModal').classList.add('hidden');
+    document.getElementById('confirmModal').classList.add('hidden');
   }
 });
 
@@ -301,4 +479,7 @@ document.getElementById('videoContainer').addEventListener('click', (e) => {
 });
 
 updateActionButtons();
+chrome.runtime.sendMessage({ type: 'GET_SETTINGS' }, (res) => {
+  applyTheme(res.settings.theme || 'system');
+});
 loadVideos();
